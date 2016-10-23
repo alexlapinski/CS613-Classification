@@ -1,10 +1,11 @@
 import util
 
 
-def execute(data):
+def execute(data, training_data_ratio=2.0/3):
     """
 
-    :param data:
+    :param data: Dataframe containing training and test data
+    :param training_data_ratio:
     :return:
     """
 
@@ -17,8 +18,15 @@ def execute(data):
     print randomized_data.head()
 
     # 3. Selects the first 2 / 3(round up) of the data for training and the remaining for testing
+    training_data, test_data = util.split_data(randomized_data, training_data_ratio)
+
     # 4. Standardizes the data(except for the last column of course) using the training data
-    # 5. Divides the training data into two groups: Spam samples, Non - Spam samples.
+    std_training_data, mean, std = util.standardize_data(training_data)
+
+    # 5. Divides the training data into two groups: Spam samples, Non-Spam samples.
+    spam_training_data = std_training_data.loc[1]
+    not_spam_training_data = std_training_data.loc[0]
+
     # 6. Creates Normal models for each feature for each class.
     # 7. Classify each testing sample using these models and choosing the class label based
     #    on which class probability is higher.

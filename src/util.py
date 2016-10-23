@@ -34,11 +34,13 @@ def randomize_data(dataframe):
 
 
 def split_data(dataframe, training_data_ratio):
+    # type: (DataFrame, float) -> (Dataframe, DataFrame)
     """
     Split the given dataframe into 2 sets, one for training, and one for testing.
+    :rtype: (DataFrame, DataFrame)
     :param dataframe: The source data to segment into training and test data
     :param training_data_ratio: The ration (e.g. 2/3) of the overall data to use for the training set, remaining is used for test set.
-    :return: Tuple of training data and test data
+    :return: TrainingData, TestData
     """
     if training_data_ratio > 1 or training_data_ratio < 0:
         raise ValueError("training_data_ratio must be between 0.0 and 1.0")

@@ -1,7 +1,7 @@
 import pandas as pd
 
 
-feature_names = ["word_freq_make", "word_freq_address", "word_freq_all", "word_freq_3d", "word_freq_our",
+column_names = ["word_freq_make", "word_freq_address", "word_freq_all", "word_freq_3d", "word_freq_our",
                  "word_freq_over", "word_freq_remove", "word_freq_internet", "word_freq_order", "word_freq_mail",
                  "word_freq_receive", "word_freq_will", "word_freq_people", "word_freq_report",
                  "word_freq_addresses", "word_freq_free", "word_freq_business", "word_freq_email", "word_freq_you",
@@ -22,6 +22,7 @@ def read_spambase_data(filepath):
     :return: Pandas dataframe, where the index is the class of the row (1 = spam, 0 = not spam)
     """
 
-    id_col_index = len(feature_names) - 1
+    # The id column is always the last in the list of columns
+    id_col_index = len(column_names) - 1
 
-    return pd.read_csv(filepath, names=feature_names, index_col=id_col_index)
+    return pd.read_csv(filepath, names=column_names, index_col=id_col_index)
