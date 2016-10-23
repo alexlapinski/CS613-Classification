@@ -1,3 +1,4 @@
+import util
 
 
 def execute(data):
@@ -7,8 +8,14 @@ def execute(data):
     :return:
     """
 
-    # 1. Reads in the data.
+    print data.columns
+    print data.head()
+
     # 2. Randomizes the data.
+    randomized_data = util.randomize_data(data)
+
+    print randomized_data.head()
+
     # 3. Selects the first 2 / 3(round up) of the data for training and the remaining for testing
     # 4. Standardizes the data(except for the last column of course) using the training data
     # 5. Divides the training data into two groups: Spam samples, Non - Spam samples.
