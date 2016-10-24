@@ -10,7 +10,10 @@ part2:
 part3:
 	python src/hw3.py --svm --data ./CTG.csv
 
+test:
+    nosetests
+
 all:
 	python src/hw3.py
 
-.PHONY: init part2 part3 clean
+.PHONY: init test part2 part3 clean all
