@@ -25,10 +25,10 @@ if __name__ == "__main__":
         exit(-1)
 
     if args.do_naive_bayes and not args.data_filepath:
-        args.data_filepath = "./spambase.data"
+        args.data_filepath = "./data/spambase.data"
 
     if args.do_svm and not args.data_filepath:
-        args.data_filepath = "./CTG.csv"
+        args.data_filepath = "./data/CTG.csv"
 
     plt.style.use(args.style)
 

@@ -13,10 +13,10 @@ To setup & install dependencies run one of the following:
 
 To run the Naive Bayes Classifier example run one of the following (from the hw3 directory):
     * make part2
-    * python src/hw3.py --naive-bayes --data ./spambase.data
+    * python app/hw3.py --naive-bayes --data ./spambase.data
 
 To run the Multi-Class SVM example run one of the following (from the hw3 directory):
     * make part3
-    * python src/hw3.py --svm --data ./CTG.csv
+    * python app/hw3.py --svm --data ./CTG.csv
 
-I've included a help feature of the hw3.py module, just run "python src/hw3.py -h".
+I've included a help feature of the hw3.py module, just run "python app/hw3.py -h".
