@@ -35,12 +35,12 @@ if __name__ == "__main__":
     print "Reading Data from '{0}'".format(args.data_filepath)
 
     if args.do_naive_bayes:
-        raw_data = data.read_spambase_data(args.data_filepath)
+        raw_data = data.read_spambase_dataset(args.data_filepath)
         print "Executing Naive-Bayes Classification"
         naive_bayes.execute(raw_data)
         print ""
 
     if args.do_svm:
-        raw_data = pd.read_csv(args.data_filepath, index_col=0)
+        raw_data = data.read_cardiotocography_dataset(args.data_filepath)
         print "Executing Gradient Descent"
         svm.execute(raw_data)

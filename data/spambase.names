@@ -9,7 +9,7 @@
 |
 | 6 continuous real [0,100] attributes of type char_freq_CHAR
 | = percentage of characters in the e-mail that match CHAR,
-| i.e. 100 * (number of CHAR occurences) / total characters in e-mail
+| i.e. 100 * (number of CHAR occurrences) / total characters in e-mail
 |
 | 1 continuous real [1,...] attribute of type capital_run_length_average
 | = average length of uninterrupted sequences of capital letters

@@ -1,6 +1,24 @@
 import math
 
 
+def extract_features(dataset):
+    """
+    Return the features (every column but the last column)
+    :param dataset: Dataset where the last column is the class
+    :return: Dataset of features only
+    """
+    return dataset[dataset.columns[:-1]]
+
+
+def extract_class(dataset):
+    """
+    Return the class of each row (the last column of the dataset)
+    :param dataset: Dataset where the last column is the class
+    :return: List of classes
+    """
+    return dataset[dataset.columns[-1]]
+
+
 def standardize_data(dataframe, mean = None, std = None):
     """
     Standardize the given dataframe (subtract mean and divide by standard deviation).

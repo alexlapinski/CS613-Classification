@@ -11,6 +11,6 @@ part3:
 	python app/hw3.py --svm --data ./data/CTG.csv
 
 test:
-    pytest
+	pytest
 
 .PHONY: init test part2 part3 clean
