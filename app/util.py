@@ -1,22 +1,14 @@
 import math
 
 
-def extract_features(dataset):
+def split_features_target(dataset):
     """
-    Return the features (every column but the last column)
+    Return the target (last column) and features (every column but the last column) as separate dataframes
     :param dataset: Dataset where the last column is the class
-    :return: Dataset of features only
+    :return: Tuple of features and target, first element is the dataframe of features,
+             second is the dataframe of targets
     """
-    return dataset[dataset.columns[:-1]]
-
-
-def extract_class(dataset):
-    """
-    Return the class of each row (the last column of the dataset)
-    :param dataset: Dataset where the last column is the class
-    :return: List of classes
-    """
-    return dataset[dataset.columns[-1]]
+    return dataset[dataset.columns[:-1]], dataset[dataset.columns[-1]]
 
 
 def standardize_data(dataframe, mean = None, std = None):

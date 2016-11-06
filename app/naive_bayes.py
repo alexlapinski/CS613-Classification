@@ -1,7 +1,7 @@
 import util
 from scipy.stats import norm
 import operator
-
+from metrics import Metrics
 
 def compute_posterior(models, data_class_probability, test_data):
     """
@@ -12,8 +12,6 @@ def compute_posterior(models, data_class_probability, test_data):
     :return: dictionary of data_class => probability
     """
 
-    #print "Computing Posterior for {0}".format(test_data)
-
     result = {}
 
     for data_class_name in models:
@@ -23,9 +21,7 @@ def compute_posterior(models, data_class_probability, test_data):
         for feature_name in models[data_class_name]:
             feature_mean = models[data_class_name][feature_name]["mean"]
             feature_std = models[data_class_name][feature_name]["standard_deviation"]
-            #print "Feature: {0}, Mean: {1}, Std: {2}".format(feature_name, feature_mean, feature_std)
             feature_probability = norm.pdf(test_data[feature_name], loc=feature_mean, scale=feature_std)
-            #print "{0} Probability = {1}".format(feature_name, feature_probability)
             probability *= feature_probability
 
         result[data_class_name] = data_class_probability[data_class_name] * probability
@@ -42,6 +38,9 @@ def execute(data, training_data_ratio=2.0 / 3):
     :return:
     """
 
+    spam_class_name = 1
+    not_spam_class_name = 0
+
     # 2. Randomize the data.
     randomized_data = util.randomize_data(data)
 
@@ -49,49 +48,59 @@ def execute(data, training_data_ratio=2.0 / 3):
     training_data, test_data = util.split_data(randomized_data, training_data_ratio)
 
     # 4. Standardize Training Data (except for class labels)
-    std_training_data, mean, std = util.standardize_data(training_data)
+    training_features, training_data_target = util.split_features_target(training_data)
+    std_training_features, mean, std = util.standardize_data(training_features)
 
     # 5. Divides the training data into two groups: Spam samples, Non-Spam samples.
-    spam_training_data = std_training_data.loc[1]
-    not_spam_training_data = std_training_data.loc[0]
+    target_groups = training_data_target.groupby(training_data_target)
 
     total_training_size = float(len(training_data))
-    data_class_probability = {1: len(spam_training_data) / total_training_size,
-                              0: len(not_spam_training_data) / total_training_size}
 
-    print "Data Class Probability: {0}".format(data_class_probability)
+    print "Computing probability of priors"
+    data_class_probability = {class_name: len(target_group) / total_training_size
+                              for (class_name, target_group) in target_groups}
 
     # 6. Creates Normal models for each feature for each class.
+    print "Creating normal models for each feature, for each class"
     models = {}
-    for data_class in data.index.unique():
-        models[data_class] = {}
-        for feature in data.columns:
-            feature_mean = std_training_data[feature].mean()
-            feature_std = std_training_data[feature].std()
-            models[data_class][feature] = {"mean":feature_mean, "standard_deviation": feature_std}
+    for class_name, target_group in target_groups:
+        models[class_name] = {}
+        for feature_name in training_features.columns:
+            dataset = std_training_features.loc[target_group.index][feature_name]
+            feature_mean = dataset.mean()
+            feature_std = dataset.std()
+            models[class_name][feature_name] = {"mean":feature_mean, "standard_deviation": feature_std}
 
     # 7. Classify each testing sample using these models and choosing the class label based
     #    on which class probability is higher.
-    std_test_data, _, _ = util.standardize_data(test_data, mean, std)
-    for i in xrange(len(std_test_data)):
-        probability = compute_posterior(models, data_class_probability, std_test_data.iloc[i])
-        assigned_class = max(probability.iteritems(), key=operator.itemgetter(1))[0]
-        if assigned_class == 0:
-            continue
-        print probability
-        print assigned_class
+    print "Evaluating models for each test data point"
+    test_features, test_targets = util.split_features_target(test_data)
+    std_test_features, _, _ = util.standardize_data(test_features, mean, std)
 
+    true_positives = 0
+    true_negatives = 0
+    false_positives = 0
+    false_negatives = 0
+    for i in xrange(len(std_test_features)):
+        probability_per_class = compute_posterior(models, data_class_probability, std_test_features.iloc[i])
+
+        # Select the class label of the class with highest probability
+        assigned_class = max(probability_per_class.iteritems(), key=operator.itemgetter(1))[0]
+        expected_class = test_targets.iloc[i]
+
+        # Tally up each of our counters for performance measurements
+        if expected_class == spam_class_name:
+            if assigned_class == spam_class_name:
+                true_positives += 1
+            else: # assigned_class == not_spam_class_name
+                false_negatives += 1
+        else: # expected_class == not_spam_class_name
+            if assigned_class == not_spam_class_name:
+                true_negatives += 1
+            else: # assigned_class == spam_class_name
+                false_positives += 1
 
     # 8. Computes the following statistics using the testing data results:
-    #   (a) Precision
-    #   (b) Recall
-    #   (c) F - measure
-    #   (d) Accuracy
+    metrics = Metrics(true_positives, false_positives, true_negatives, false_negatives)
 
-    # 2. If you decide to work in log space, realize that Matlab interprets 0log0 as NaN (not a number).
-    #    You should identify this situation and consider it to be a value of zero.
-
-    # 3. Although Naive Bayes Classifiers can do multi-class classification directly, you may assume
-    #    binary classification in your implementation.
-
-    pass
+    return metrics

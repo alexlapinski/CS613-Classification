@@ -37,8 +37,11 @@ if __name__ == "__main__":
     if args.do_naive_bayes:
         raw_data = data.read_spambase_dataset(args.data_filepath)
         print "Executing Naive-Bayes Classification"
-        naive_bayes.execute(raw_data)
-        print ""
+        metrics = naive_bayes.execute(raw_data)
+        print "Precision: {0}".format(metrics.precision())
+        print "Recall: {0}".format(metrics.recall())
+        print "F-measure: {0}".format(metrics.f_measure())
+        print "Accuracy: {0}".format(metrics.accuracy())
 
     if args.do_svm:
         raw_data = data.read_cardiotocography_dataset(args.data_filepath)
