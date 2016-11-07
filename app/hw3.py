@@ -1,6 +1,6 @@
 import argparse
 import pandas as pd
-import matplotlib.pyplot as plt
+#import matplotlib.pyplot as plt
 import svm
 import naive_bayes
 import data
@@ -30,7 +30,7 @@ if __name__ == "__main__":
     if args.do_svm and not args.data_filepath:
         args.data_filepath = "./data/CTG.csv"
 
-    plt.style.use(args.style)
+    #plt.style.use(args.style)
 
     print "Reading Data from '{0}'".format(args.data_filepath)
 
@@ -46,4 +46,9 @@ if __name__ == "__main__":
     if args.do_svm:
         raw_data = data.read_cardiotocography_dataset(args.data_filepath)
         print "Executing Gradient Descent"
-        svm.execute(raw_data)
+        one_vs_many_metrics, one_vs_one_accuracy = svm.execute(raw_data)
+
+        for metric in one_vs_many_metrics:
+            print "Accuracy of {0} vs {1}: {2}".format(metric.one_class, metric.other_classes, metric.accuracy())
+
+        print "Accuracy of one-vs-one: {0}".format(one_vs_one_accuracy)

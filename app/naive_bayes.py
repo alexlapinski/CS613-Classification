@@ -1,7 +1,7 @@
 import util
 from scipy.stats import norm
 import operator
-from metrics import Metrics
+from metrics import BinaryClassifierMetric
 
 def compute_posterior(models, data_class_probability, test_data):
     """
@@ -101,6 +101,6 @@ def execute(data, training_data_ratio=2.0 / 3):
                 false_positives += 1
 
     # 8. Computes the following statistics using the testing data results:
-    metrics = Metrics(true_positives, false_positives, true_negatives, false_negatives)
+    metrics = BinaryClassifierMetric(true_positives, false_positives, true_negatives, false_negatives)
 
     return metrics

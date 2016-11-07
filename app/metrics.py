@@ -1,4 +1,4 @@
-class Metrics:
+class BinaryClassifierMetric:
 
     def __init__(self, true_positives, false_positives, true_negatives, false_negatives):
         """
@@ -61,3 +61,43 @@ class Metrics:
         total_items = correctly_identified_items + incorrectly_identified_items
 
         return correctly_identified_items / float(total_items)
+
+
+class AccuracyMetric:
+
+    def __init__(self, total_samples, num_incorrectly_classified, one_class, other_classes):
+        """
+        Create a metric object to represent one-vs-many multi-classifier.
+        :param total_samples: Total number of samples in the test population.
+        :param num_incorrectly_classified: Number of samples incorrectly classified.
+        :param one_class: Label for the 'one' class.
+        :param other_classes: Labels for the 'other' classes, may be one or many
+        """
+
+        assert total_samples > 0, "Expected total samples to be greater than zero."
+        assert num_incorrectly_classified <= total_samples, "Expected the number of incorrectly classified " \
+                                                            "samples to be less than or equal to the total samples"
+
+        assert one_class is not None, "Expected 'one_class' to be a non-None value."
+        assert other_classes is not None, "Expected 'other_classes' to be a non-None value."
+
+        self._total_samples = total_samples
+        self._num_incorrectly_classified = num_incorrectly_classified
+        self._one_class = one_class
+        self._other_classes = other_classes
+
+    @property
+    def one_class(self):
+        return self._one_class
+
+    @property
+    def other_classes(self):
+        return self._other_classes
+
+    def accuracy(self):
+        """
+        Compute the accuracy of this test run.
+        :return: Percentage of samples correctly classified of all samples.
+        """
+        num_correctly_classified = self._total_samples - self._num_incorrectly_classified
+        return num_correctly_classified / float(self._total_samples)
