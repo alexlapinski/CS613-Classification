@@ -42,6 +42,7 @@ if __name__ == "__main__":
         print "Recall: {0}".format(metrics.recall())
         print "F-measure: {0}".format(metrics.f_measure())
         print "Accuracy: {0}".format(metrics.accuracy())
+        print ""
 
     if args.do_svm:
         raw_data = data.read_cardiotocography_dataset(args.data_filepath)

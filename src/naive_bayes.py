@@ -3,6 +3,7 @@ from scipy.stats import norm
 import operator
 from metrics import BinaryClassifierMetric
 
+
 def compute_posterior(models, data_class_probability, test_data):
     """
     Return a dictionary of data_class and probability of that data_class for the given test_data
@@ -42,12 +43,15 @@ def execute(data, training_data_ratio=2.0 / 3):
     not_spam_class_name = 0
 
     # 2. Randomize the data.
+    print "Randomizing Data"
     randomized_data = util.randomize_data(data)
 
     # 3. Split the data in for training and testing
+    print "Splitting Data for Test and Training"
     training_data, test_data = util.split_data(randomized_data, training_data_ratio)
 
     # 4. Standardize Training Data (except for class labels)
+    print "Standardizing Training Data"
     training_features, training_data_target = util.split_features_target(training_data)
     std_training_features, mean, std = util.standardize_data(training_features)
 
@@ -100,7 +104,7 @@ def execute(data, training_data_ratio=2.0 / 3):
             else: # assigned_class == spam_class_name
                 false_positives += 1
 
-    # 8. Computes the following statistics using the testing data results:
+    # 8. Computes the statistics using the testing data results
     metrics = BinaryClassifierMetric(true_positives, false_positives, true_negatives, false_negatives)
 
     return metrics

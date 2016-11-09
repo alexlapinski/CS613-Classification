@@ -38,6 +38,30 @@ def execute(dataframe, training_data_ratio=2.0/3):
     target_classes = training_targets.unique()
 
     # 5. First trains and evaluates using a One vs All approach:
+    one_vs_many_metrics = execute_one_vs_many(std_test_features, std_training_features, target_classes, test_targets,
+                                              training_targets)
+
+    # 6. Trains and evaluates using a One vs One approach:
+    num_classified_incorrectly = execute_one_vs_one(std_test_features, std_training_features, target_classes,
+                                                    test_targets, training_targets)
+
+    num_classified_correctly = len(test_features) - num_classified_incorrectly
+    one_vs_one_accuracy = num_classified_correctly / float(len(test_features))
+
+    return one_vs_many_metrics, one_vs_one_accuracy
+
+
+def execute_one_vs_many(std_test_features, std_training_features, target_classes, test_targets, training_targets):
+    """
+    Execute the SVM algorithm for multi-class classification, using the one-vs-many approach.
+    Return metrics from the evaluation of the test set.
+    :param std_test_features:
+    :param std_training_features:
+    :param target_classes:
+    :param test_targets:
+    :param training_targets:
+    :return:
+    """
     clf = SVC()
     one_vs_many_metrics = []
     print "Training/Testing one-vs-many SVM"
@@ -71,8 +95,20 @@ def execute(dataframe, training_data_ratio=2.0/3):
         metric = AccuracyMetric(len(std_test_features), num_classified_incorrectly, target_class, others)
         one_vs_many_metrics.append(metric)
 
-    # 6. Trains and evaluates using a One vs One approach:
+    return one_vs_many_metrics
 
+
+def execute_one_vs_one(std_test_features, std_training_features, target_classes, test_targets, training_targets):
+    """
+    Execute the SVM model for multi-class classification using one-vs-one approach (of possible one-vs-one combinations).
+    Return the number of incorrectly classified items in the test set.
+    :param std_test_features:
+    :param std_training_features:
+    :param target_classes:
+    :param test_targets:
+    :param training_targets:
+    :return:
+    """
     # Construct our possible 1vs1 sets
     one_vs_one_models = {}
     print "Training one-vs-one SVM"
@@ -115,7 +151,4 @@ def execute(dataframe, training_data_ratio=2.0/3):
         if actual_class != expected_class:
             num_classified_incorrectly += 1
 
-    num_classified_correctly = len(test_features) - num_classified_incorrectly
-    one_vs_one_accuracy = num_classified_correctly / float(len(test_features))
-
-    return one_vs_many_metrics, one_vs_one_accuracy
+    return num_classified_incorrectly

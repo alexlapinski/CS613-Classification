@@ -5,12 +5,11 @@ clean:
 	rm -f graphs/**/*.png tex/*.aux tex/*.log tex/*.synctex.gz .cache
 
 part2:
-	python app/hw3.py --naive-bayes --data ./data/spambase.data
+	python src/hw3.py --naive-bayes --data ./data/spambase.data
 
 part3:
-	python app/hw3.py --svm --data ./data/CTG.csv
+	python src/hw3.py --svm --data ./data/CTG.csv
 
-test:
-	pytest
+all: part2 part3
 
-.PHONY: init test part2 part3 clean
+.PHONY: init all part2 part3 clean
